@@ -258,6 +258,34 @@ tr.total td{font-family:var(--display);font-weight:700;font-size:16px;border-bot
 .lowlist{display:flex;flex-direction:column;gap:8px}
 .lowlist div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;align-items:center}
 @media (prefers-reduced-motion:no-preference){.bar i,.hb .trk i{transition:width .3s}}
+
+/* ===== เพิ่มสำหรับเวอร์ชัน Supabase (ไม่แก้สไตล์เดิม) ===== */
+input[type=email]{font:inherit;font-size:15px;color:var(--fg);background:var(--sunk);border:1px solid transparent;border-radius:11px;padding:9px 12px;width:100%}
+.lg-pw.lg-em input{padding-right:14px}
+.status.bad i{background:var(--neg)}
+.banner{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:80;width:max-content;max-width:min(580px,calc(100vw - 32px));
+  padding:10px 12px 10px 14px;border-radius:12px;background:var(--neg-soft);color:var(--neg);border:1px solid var(--neg);font-size:13.5px;line-height:1.45;
+  box-shadow:var(--shadow);display:flex;gap:10px;align-items:flex-start}
+.banner.warn{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.banner.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.banner span{flex:1;min-width:0;overflow-wrap:anywhere}
+.banner button{border:0;background:none;color:inherit;font-size:18px;line-height:1;cursor:pointer;padding:0 2px}
+.hiddenbox summary{cursor:pointer;font-weight:600;font-size:14.5px;color:var(--muted)}
+.hrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.hrow .sku{font-family:ui-monospace,Menlo,monospace;color:var(--muted);font-size:12.5px}
+.hrow .nm{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
+.btn:disabled{opacity:.6;cursor:default}
+/* แก้บั๊กเค้าโครงเดิมบนมือถือ ≤440px: ช่อง "ชื่อสินค้า" สั่ง span 2 ในตาราง 1 คอลัมน์ ทำให้ฟอร์มสินค้าแคบจนอ่านไม่ออก */
+@media (max-width:440px){.row3>.f{grid-column:auto!important}}
+
+/* ===== v3: Reset Password (ใช้สไตล์การ์ด Login เดิม) ===== */
+.lg-card[hidden]{display:none}
+.lg-link{align-self:center;border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:6px 8px;border-radius:8px}
+.lg-link:hover{color:var(--accent-2)}
+.lg-link[hidden]{display:none}
+.lg-fields{display:flex;flex-direction:column;gap:16px}
+.lg-fields[hidden]{display:none}
+.lg-hint{margin:-6px 0 0;font-size:12.5px;color:var(--muted)}
 </style>
 
 <div class="login" id="login">
@@ -333,18 +361,46 @@ tr.total td{font-family:var(--display);font-weight:700;font-size:16px;border-bot
 
     <form class="lg-card" id="lgForm" novalidate autocomplete="on">
       <h1>เข้าสู่ระบบ</h1>
-      <p class="sub">ระบบหลังร้าน Sensei Store</p>
+      <p class="sub">ระบบหลังร้าน Sensei Store · ใช้อีเมลและรหัสผ่านของเจ้าของร้าน</p>
+      <label class="f">อีเมล
+        <div class="pwwrap lg-pw lg-em"><input id="lgEm" type="email" name="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="อีเมลเจ้าของร้าน" required></div></label>
       <label class="f">รหัสผ่าน
         <div class="pwwrap lg-pw"><input id="lgPw" type="password" name="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" required>
           <button type="button" id="lgShow" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></label>
       <p class="lg-msg" id="lgMsg" role="status" aria-live="polite"></p>
       <button class="btn primary lg-btn" type="submit" id="lgBtn">เข้าสู่ระบบ</button>
+      <button type="button" class="lg-link" id="lgForgot">ลืมรหัสผ่าน?</button>
+    </form>
+    <form class="lg-card" id="fgForm" novalidate hidden autocomplete="on">
+      <h1>ลืมรหัสผ่าน</h1>
+      <p class="sub">กรอกอีเมลเจ้าของร้าน ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปให้</p>
+      <label class="f">อีเมล
+        <div class="pwwrap lg-pw lg-em"><input id="fgEm" type="email" name="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="อีเมลเจ้าของร้าน" required></div></label>
+      <p class="lg-msg" id="fgMsg" role="status" aria-live="polite"></p>
+      <button class="btn primary lg-btn" type="submit" id="fgBtn">ส่งลิงก์ตั้งรหัสผ่านใหม่</button>
+      <button type="button" class="lg-link" id="fgBack">กลับหน้าเข้าสู่ระบบ</button>
+    </form>
+    <form class="lg-card" id="rcForm" novalidate hidden autocomplete="off">
+      <h1 id="rcTitle">ตั้งรหัสผ่านใหม่</h1>
+      <p class="sub" id="rcSub" aria-live="polite">กำลังตรวจสอบลิงก์…</p>
+      <div class="lg-fields" id="rcFields" hidden>
+        <label class="f">รหัสผ่านใหม่
+          <div class="pwwrap lg-pw"><input id="rcPw" type="password" name="new-password" autocomplete="new-password" placeholder="อย่างน้อย 8 ตัวอักษร" minlength="8">
+            <button type="button" id="rcShow" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></label>
+        <label class="f">ยืนยันรหัสผ่านใหม่
+          <div class="pwwrap lg-pw"><input id="rcPw2" type="password" name="new-password-confirm" autocomplete="new-password" placeholder="พิมพ์รหัสผ่านใหม่อีกครั้ง"></div></label>
+      </div>
+      <p class="lg-msg" id="rcMsg" role="status" aria-live="polite"></p>
+      <button class="btn primary lg-btn" type="submit" id="rcBtn" hidden>บันทึกรหัสผ่านใหม่</button>
+      <button class="btn lg-btn" type="button" id="rcAlt" hidden>ขอลิงก์ใหม่</button>
+      <button type="button" class="lg-link" id="rcCancel">ยกเลิก กลับหน้าเข้าสู่ระบบ</button>
     </form>
     <div class="lg-foot">แตะน้องแมวเพื่อทักทาย</div>
   </div>
 </div>
 
 <div id="app" hidden>
+<div id="banner" class="banner" role="alert" hidden><span id="bannerTxt"></span><button type="button" id="bannerX" aria-label="ปิด">×</button></div>
 <div class="wrap">
   <div class="band">
     <div class="brandcol">
@@ -473,7 +529,13 @@ tr.total td{font-family:var(--display);font-weight:700;font-size:16px;border-bot
       <div class="tbl"><table class="inv">
         <thead><tr><th class="l">รหัส</th><th class="l">ชื่อสินค้า</th><th>ทุน/ชิ้น</th><th>ราคาขาย</th><th>คงเหลือ</th><th>มูลค่าทุน</th><th class="l">สถานะ</th><th></th></tr></thead>
         <tbody id="invBody"></tbody></table></div>
-      <p class="hint">กด "รับเข้า" เมื่อมีของเข้า ระบบจะคำนวณต้นทุนเฉลี่ยใหม่ให้อัตโนมัติ กด "เบิกออก" เมื่อขายหรือนำของออก</p>
+      <p class="hint">กด "รับเข้า" เมื่อมีของเข้า ระบบจะคำนวณต้นทุนเฉลี่ยใหม่ให้อัตโนมัติ กด "เบิกออก" เมื่อขายหรือนำของออก ปุ่ม "ซ่อน" ไม่ลบสินค้าจริง กู้คืนได้ภายหลัง</p>
+
+      <details class="hiddenbox" id="hiddenBox" hidden>
+        <summary>สินค้าที่ซ่อนไว้ <span class="tag" id="hiddenN">0 รายการ</span></summary>
+        <p class="hint" style="margin:6px 0">สินค้าที่กด "ซ่อน" จะไม่ถูกลบจริง จำนวนสต็อกคงเดิม กู้คืนได้ที่นี่</p>
+        <div id="hiddenBody"></div>
+      </details>
     </section>
   </div>
   </section>
@@ -562,6 +624,22 @@ tr.total td{font-family:var(--display);font-weight:700;font-size:16px;border-bot
   </div>
 </div>
 
+<!-- ไลบรารี Supabase (v2) จาก CDN ระบุเวอร์ชันตายตัว ไม่ใช้ @latest
+     หมายเหตุ: ผู้สร้างไฟล์นี้เปิดอินเทอร์เน็ตตรวจเวอร์ชันไม่ได้ ก่อนใช้จริงให้เปิดลิงก์ด้านล่างในเบราว์เซอร์ว่าโหลดได้ (ดูคู่มือข้อ 3)
+     ถ้าต้องการเข้มงวดขึ้น ใส่ integrity="sha384-..." ของไฟล์นี้ (วิธีคำนวณอยู่ในคู่มือ) · เปลี่ยนเวอร์ชันได้ที่เลขท้าย @2.58.0 เพียงจุดเดียว -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/* =====================================================================
+   ตั้งค่า Supabase  ← เจ้าของร้านกรอกเพียง 2 ช่องนี้
+   1) SUPABASE_URL : Supabase > Project Settings > API > Project URL  (ขึ้นต้น https://....supabase.co)
+   2) SUPABASE_KEY : "publishable key" (ขึ้นต้น sb_publishable_...) หรือ "anon key" (ขึ้นต้น eyJ...)
+   ห้ามใส่ service_role key / secret key / รหัสผ่านฐานข้อมูล ในไฟล์นี้เด็ดขาด (โค้ดจะปฏิเสธการทำงานถ้าพบ)
+   ===================================================================== */
+window.SS_CONFIG = {
+  SUPABASE_URL: "https://nefhecckinnxajpiumih.supabase.co",
+  SUPABASE_KEY: "sb_publishable_N4cheMFIT6RyOfBvzAYGWA_lxVbRfCH"
+};
+</script>
 <script>
 const $ = id => document.getElementById(id);
 const num = v => { const n=parseFloat(v); return isFinite(n)?n:0; };
@@ -576,15 +654,15 @@ function applyTheme(t){
   const r=document.documentElement;
   if(t==="light"||t==="dark") r.setAttribute("data-theme",t); else r.removeAttribute("data-theme");
   document.querySelectorAll(".theme button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===t)));
-  ls.set("ss-theme",t);
+  ls.set("ss2-theme",t);
 }
 document.querySelectorAll(".theme button").forEach(b=>b.onclick=()=>applyTheme(b.dataset.t));
-applyTheme(ls.get("ss-theme")||"auto");
+applyTheme(ls.get("ss2-theme")||ls.get("ss-theme")||"auto");  /* ss-theme อ่านอย่างเดียวเพื่อสืบทอดธีมเดิม ไม่เขียนทับ */
 
 /* ---------- tabs ---------- */
 function showTab(t){
   ["calc","stock","dash"].forEach(k=>{ $(k).hidden = k!==t; $("t-"+k).setAttribute("aria-selected",String(k===t)); });
-  ls.set("ss-tab",t);
+  ls.set("ss2-tab",t);
   if(t==="dash") renderDash();
 }
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
@@ -608,21 +686,20 @@ const PLATFORMS = {
 };
 const clone = a => a.map(f=>({...f}));
 let platform="tiktok", feesBy={}, fees=[];
-const KEY="profit-calc-v1", FIELDS=["cost","price","discount","ship","extra","target","affNum"];
+/* ค่า UI ชั่วคราวของหน้าคำนวณ เก็บในเบราว์เซอร์ด้วยคีย์ใหม่ "ss2-calc-ui" (ไม่แตะคีย์เดิม profit-calc-v1)
+   ส่วน "ค่าธรรมเนียมแต่ละแพลตฟอร์ม" และ "VAT Affiliate" เป็นข้อมูลธุรกิจ เก็บใน Supabase ตาราง app_settings */
+const KEY="ss2-calc-ui", FIELDS=["cost","price","discount","ship","extra","target","affNum"];
 
 function loadCalc(){
   Object.keys(PLATFORMS).forEach(k=>feesBy[k]=clone(PLATFORMS[k].fees));
   const s=ls.get(KEY);
   if(s){
     FIELDS.forEach(k=>{ if(s[k]!=null) $(k).value=s[k]; });
-    $("affVat").value=s.affVat||"0";
-    if(s.feesBy) Object.keys(s.feesBy).forEach(k=>{ if(PLATFORMS[k]&&Array.isArray(s.feesBy[k])) feesBy[k]=s.feesBy[k]; });
-    else if(Array.isArray(s.fees)) feesBy.tiktok=s.fees;
     if(PLATFORMS[s.platform]) platform=s.platform;
   }
   fees=feesBy[platform];
 }
-function saveCalc(){ const s={feesBy,platform,affVat:$("affVat").value}; FIELDS.forEach(k=>s[k]=$(k).value); ls.set(KEY,s); }
+function saveCalc(){ const s={platform}; FIELDS.forEach(k=>s[k]=$(k).value); ls.set(KEY,s); }
 
 function renderPlat(){
   $("plat").innerHTML=Object.entries(PLATFORMS).map(([k,p])=>`<button type="button" data-k="${k}" aria-pressed="${k===platform}">${p.label}</button>`).join("");
@@ -640,10 +717,10 @@ function renderFees(){
       <button class="x" type="button" aria-label="ลบรายการ">×</button>`;
     const [tn,tv]=row.querySelectorAll("input"), ts=row.querySelector("select");
     tn.value=f.name; tv.value=f.val; ts.value=f.type;
-    tn.oninput=e=>{f.name=e.target.value;calc();};
-    tv.oninput=e=>{f.val=num(e.target.value);calc();};
-    ts.onchange=e=>{f.type=e.target.value;calc();};
-    row.querySelector(".x").onclick=()=>{fees.splice(i,1);renderFees();calc();};
+    tn.oninput=e=>{f.name=e.target.value;calc();markSettings();};
+    tv.oninput=e=>{f.val=num(e.target.value);calc();markSettings();};
+    ts.onchange=e=>{f.type=e.target.value;calc();markSettings();};
+    row.querySelector(".x").onclick=()=>{fees.splice(i,1);renderFees();calc();markSettings();};
     box.appendChild(row);
   });
 }
@@ -698,72 +775,253 @@ function syncAff(from){
   calc();
 }
 
-/* ---------- store: shared database, or this browser when unavailable ---------- */
-const S={products:[],moves:[],sales:[],mode:"local",ready:false};
-let db=null;
-const uid=()=> "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-function setStatus(on,text){ const el=$("status"); el.classList.toggle("on",on); el.querySelector("span").textContent=text; }
+/* ---------- store: Supabase เป็นฐานข้อมูลหลัก ----------
+   อ่าน: select ผ่าน RLS (products, sales, stock_moves, app_settings)
+   เขียน: เรียก RPC เท่านั้น (create_product, update_product, delete_product, restore_product,
+          stock_in, stock_out, record_sale, cancel_sale) · ยกเว้น app_settings ที่ SQL อนุญาตให้ insert/update ตรงได้ */
+const S={products:[],hidden:[],moves:[],sales:[],cancelledCount:0,totals:null,salesOK:false,prodOK:false,ready:false};
+let sb=null, chan=null, chanSeq=0, loadSeq=0, reloadTimer=0, loggedIn=false, live=false, bannerCtx="";
+const newId=p=> p+(window.crypto&&crypto.randomUUID?crypto.randomUUID().replace(/-/g,""):(Date.now().toString(36)+Math.random().toString(36).slice(2,12)+Math.random().toString(36).slice(2,12)));
+const ts=v=>{ const t=Date.parse(String(v||"").replace(/(\.\d{3})\d+/,"$1")); return isFinite(t)?t:0; };
+function setStatus(on,text,bad){ const el=$("status"); el.classList.toggle("on",!!on); el.classList.toggle("bad",!!bad); el.querySelector("span").textContent=text; }
+$("status").style.cursor="pointer"; $("status").title="แตะเพื่อโหลดข้อมูลล่าสุดจากฐานข้อมูล";
+$("status").addEventListener("click",()=>{ if(loggedIn) reloadSoon(0); });
 
-async function initStore(){
-  try{ db = window.claude && claude.use ? await claude.use("db") : null; }catch(e){ db=null; }
-  if(!db){ useLocal(); return; }
-  S.mode="db";
-  setStatus(true,"บันทึกในฐานข้อมูลออนไลน์");
-  db.collection("products").onSnapshot(snap=>{
-    S.products=snap.docs.map(d=>({id:d.id,...d.data()})); S.ready=true; renderInv(); renderDash();
-  }, err=>{ if(err.code==="revoked"||err.code==="not_granted"){ setStatus(false,"ฐานข้อมูลใช้งานไม่ได้ในมุมมองนี้"); } });
-  db.collection("moves").orderBy("at","desc").limit(25).onSnapshot(snap=>{
-    S.moves=snap.docs.map(d=>({id:d.id,...d.data()})); renderDash();
-  }, ()=>{});
-  db.collection("sales").orderBy("at","desc").limit(1000).onSnapshot(snap=>{
-    S.sales=snap.docs.map(d=>({id:d.id,...d.data()})); renderDash();
-  }, ()=>{});
+/* แถบแจ้งเตือน */
+let bannerTimer=0;
+function showBanner(text,kind,ms,ctx){ const b=$("banner"); b.className="banner"+(kind?" "+kind:""); $("bannerTxt").textContent=text; b.hidden=false; bannerCtx=ctx||"";
+  clearTimeout(bannerTimer); if(ms) bannerTimer=setTimeout(()=>{ b.hidden=true; bannerCtx=""; },ms); }
+function hideBanner(){ clearTimeout(bannerTimer); $("banner").hidden=true; bannerCtx=""; }
+$("bannerX").onclick=hideBanner;
+
+/* แปลง DB row -> รูปแบบที่หน้าเว็บเดิมใช้ (ชื่อฟิลด์เดิม: minQty, at, disc, aff, pid, feeLines) */
+const mapProduct=r=>({id:r.id,sku:r.sku,name:r.name,cost:num(r.cost),qty:num(r.qty),price:r.price==null?null:num(r.price),minQty:num(r.min_qty),updatedAt:ts(r.updated_at),deletedAt:r.deleted_at||null});
+const mapSale=r=>({id:r.id,pid:r.product_id,sku:r.sku,name:r.name,qty:num(r.qty),orders:num(r.orders),price:num(r.price),disc:num(r.discount),platform:r.platform,platformLabel:r.platform_label||r.platform,
+  aff:num(r.aff_pct),revenue:num(r.revenue),fees:num(r.fees),payout:num(r.payout),cogs:num(r.cogs),profit:num(r.profit),feeLines:r.fee_lines,note:r.note||"",at:ts(r.created_at),cancelledAt:r.cancelled_at||null});
+const mapMove=r=>({id:r.id,type:r.type,pid:r.product_id,sku:r.sku,name:r.name,qty:num(r.qty),cost:r.cost,note:r.note||"",at:ts(r.created_at)});
+
+/* ---- จัดการ error ---- */
+class AppErr extends Error{ constructor(m,kind){ super(m); this.kind=kind||"other"; } }
+const NETMSG="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้หรือไม่ได้รับคำตอบ ตรวจอินเทอร์เน็ตแล้วลองใหม่";
+const NETMSG_W="ส่งคำขอแล้วแต่ไม่ได้รับคำตอบ (ยังไม่ทราบว่าบันทึกสำเร็จหรือไม่) กดบันทึกอีกครั้งได้ ระบบกันบันทึกซ้ำให้";
+const MSG_STALE="บันทึกสำเร็จ แต่รีเฟรชข้อมูลไม่สำเร็จ ข้อมูลบนจอยังเป็นของเก่า (อย่ากดบันทึกซ้ำ) แตะแถบสถานะด้านบนเพื่อโหลดใหม่";
+const TITLE={insufficient_stock:"สต็อกไม่พอ · ",invalid_argument:"ข้อมูลไม่ถูกต้อง · ",inconsistent_state:"ข้อมูลในระบบผิดปกติ · "};
+function explain(er){
+  const m=String((er&&er.message)||""), c=String((er&&er.code)||""), st=er&&er.status;
+  if(/^PGRST30[123]$/.test(c)||/jwt/i.test(m)||st===401) return new AppErr("เซสชันหมดอายุ","auth");
+  const mm=m.match(/^(not_owner|invalid_argument|not_found|product_deleted|sku_conflict|insufficient_stock|id_conflict|inconsistent_state)\b:?\s*([\s\S]*)$/);
+  if(mm){ const k=mm[1], rest=mm[2].trim();
+    if(k==="not_owner") return new AppErr("บัญชีนี้ไม่ใช่เจ้าของร้าน ไม่มีสิทธิ์ทำรายการ","not_owner");
+    if(k==="id_conflict") return new AppErr("รหัสรายการชนกับรายการที่ข้อมูลต่างกัน กรุณากดบันทึกใหม่อีกครั้ง","id_conflict");
+    return new AppErr((TITLE[k]||"")+(rest||k),k); }
+  if(c==="23505") return new AppErr("รหัสสินค้านี้มีอยู่แล้ว ใช้รหัสอื่นหรือแก้ไขรายการเดิม","sku_conflict");
+  if(!c&&/failed to fetch|networkerror|load failed|network request failed|fetch/i.test(m)) return new AppErr(NETMSG,"net");
+  if(c==="42501"||st===403) return new AppErr("ไม่มีสิทธิ์ทำรายการนี้ (บัญชีนี้ไม่ใช่เจ้าของร้าน)","not_owner");
+  return new AppErr("เกิดข้อผิดพลาด: "+(m||"ไม่ทราบสาเหตุ"),"other");
 }
-function useLocal(){
-  S.mode="local"; db=null;
-  S.products=ls.get("ss-products")||[]; S.moves=ls.get("ss-moves")||[]; S.sales=ls.get("ss-sales")||[]; S.ready=true;
-  setStatus(false,"บันทึกเฉพาะในเบราว์เซอร์นี้");
-  renderInv(); renderDash();
+const errText=e=> (e&&e.message)?e.message:"บันทึกไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองใหม่";
+async function refreshOK(){ try{ const r=await sb.auth.refreshSession(); return !!(r&&r.data&&r.data.session&&!r.error); }catch(e){ return false; } }
+function lostAuth(){ if(window.SS_authLost) window.SS_authLost("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่"); }
+/* ส่งคำสั่งไป Supabase: ถ้า token หมดอายุ ลอง refresh 1 ครั้งแล้วส่งซ้ำ (ใช้ idempotency key เดิม จึงไม่ซ้ำ) · ไม่สำเร็จ = กลับหน้า Login */
+async function q(run){
+  for(let i=0;i<2;i++){
+    let res; try{ res=await run(); }catch(e){ throw explain({message:(e&&e.message)||"fetch"}); }
+    if(!res.error) return res.data;
+    const ex=explain(res.error);
+    if(ex.kind==="auth"){ if(i===0&&await refreshOK()) continue; lostAuth(); }
+    throw ex;
+  }
 }
-function persistLocal(){ ls.set("ss-products",S.products); ls.set("ss-moves",S.moves.slice(0,25)); ls.set("ss-sales",S.sales.slice(0,1000)); renderInv(); renderDash(); }
-async function putSale(s){
-  const {id,...body}=s;
-  if(db){ await db.collection("sales").doc(id).set(body); }
-  else { S.sales.unshift(s); persistLocal(); }
+const callRpc=(name,args)=>q(()=>sb.rpc(name,args)).catch(e=>{ if(e&&e.kind==="net") throw new AppErr(NETMSG_W,"net"); throw e; });
+/* ตรวจรูปร่างผลลัพธ์ของ RPC ตาม 03_rpc.sql: ตารางที่คืนแถว (products/sales) มี id · cancel_sale มี cancelled_at · delete_product คืน jsonb {deleted:true} */
+function shapeOK(fn,res){
+  if(!res||typeof res!=="object") return false;
+  if(fn==="delete_product") return res.deleted===true;
+  if(fn==="cancel_sale") return !!res.id&&!!res.cancelled_at;
+  if(fn==="record_sale") return !!res.id&&res.cancelled_at==null;
+  return !!res.id;
 }
-async function removeSale(id){
-  if(db){ await db.collection("sales").doc(id).delete(); }
-  else { S.sales=S.sales.filter(x=>x.id!==id); persistLocal(); }
+
+/* ---- กันกดซ้ำ: ส่งได้ทีละคำสั่ง + idempotency key ----
+   คีย์ผูกกับ "ข้อมูลของคำสั่งนั้น" (sig) ถ้าส่งแล้วไม่ทราบผล (เน็ตหลุด) กดใหม่ด้วยข้อมูลเดิมจะใช้คีย์เดิม เซิร์ฟเวอร์จึงไม่ทำซ้ำ
+   ถ้าเซิร์ฟเวอร์ตอบชัดเจน (สำเร็จ/ปฏิเสธ) คีย์จะถูกทิ้ง */
+const idem=new Map();
+function idemKey(sig,prefix){ const now=Date.now(); let e=idem.get(sig); if(!e||now-e.t>600000){ e={k:newId(prefix),t:now}; idem.set(sig,e); } return e.k; }
+const DEFINITIVE=new Set(["not_owner","insufficient_stock","invalid_argument","not_found","product_deleted","sku_conflict","id_conflict","inconsistent_state"]);
+/* ลบคีย์เมื่อ "สำเร็จ" หรือ "เซิร์ฟเวอร์ปฏิเสธชัดเจน" เท่านั้น · เน็ตหลุด/หมดอายุ/ข้อผิดพลาดที่ไม่ทราบผล = เก็บคีย์เดิมไว้ใช้ส่งซ้ำ */
+function idemSettle(sig,err){ if(!sig) return; if(!err||DEFINITIVE.has(err.kind)) idem.delete(sig); }
+/* ปุ่มยืนยันสองจังหวะ (กดครั้งแรก = ขอให้ยืนยัน 3 วินาที) · จำสถานะไว้นอกปุ่ม เพื่อไม่หายเมื่อตารางถูกวาดใหม่จากอัปเดตอัตโนมัติ */
+const armedUntil=new Map();
+const isArmed=k=>(armedUntil.get(k)||0)>Date.now();
+function arm(k,redraw){ armedUntil.set(k,Date.now()+3000); redraw(); setTimeout(redraw,3100); }
+let busy=false;
+let staleAfterWrite=false;
+async function write(btn,fn,busyText){
+  if(busy) return false;
+  if(staleAfterWrite){ showBanner(MSG_STALE,"warn",0,"stale"); reloadSoon(0); return false; }   // กันกรอกซ้ำจากข้อมูลเก่า
+  busy=true;
+  const label=btn?btn.textContent:"";
+  if(btn){ btn.disabled=true; btn.setAttribute("aria-busy","true"); if(busyText) btn.textContent=busyText; }
+  try{ return await fn(); }
+  finally{ busy=false; if(btn){ btn.disabled=false; btn.removeAttribute("aria-busy"); if(busyText) btn.textContent=label; } }
 }
+
+/* ---- ตั้งค่าธุรกิจ (ค่าธรรมเนียมแต่ละแพลตฟอร์ม + VAT Affiliate) -> app_settings ---- */
+let settingsDirty=false, settingsSaving=false, settingsTimer=0;
+function markSettings(){ if(!sb||!loggedIn) return; settingsDirty=true; clearTimeout(settingsTimer); settingsTimer=setTimeout(saveSettings,800); }
+async function saveSettings(){
+  if(!sb||!loggedIn||!settingsDirty) return;
+  if(settingsSaving){ settingsTimer=setTimeout(saveSettings,400); return; }
+  settingsSaving=true; settingsDirty=false;
+  const rows=[{key:"fees_by_platform",value:JSON.parse(JSON.stringify(feesBy))},{key:"aff_vat",value:$("affVat").value}];
+  try{ await q(()=>sb.from("app_settings").upsert(rows,{onConflict:"key"})); }
+  catch(er){ settingsDirty=true; if(er.kind==="net"||er.kind==="other"){ settingsTimer=setTimeout(saveSettings,5000); }
+    showBanner("บันทึกการตั้งค่าค่าธรรมเนียมไม่สำเร็จ: "+er.message+(er.kind==="net"||er.kind==="other"?" (ระบบจะลองใหม่)":""),"warn",8000); }
+  finally{ settingsSaving=false; }
+}
+function applySettings(rows){
+  if(settingsDirty||settingsSaving) return;
+  const act=document.activeElement; if(act&&act.closest&&act.closest("#fees")) return;
+  const m={}; (rows||[]).forEach(r=>{ m[r.key]=r.value; });
+  let changed=false; const f=m.fees_by_platform;
+  if(f&&typeof f==="object"){
+    Object.keys(PLATFORMS).forEach(k=>{
+      if(Array.isArray(f[k])){
+        const cleaned=f[k].filter(x=>x&&typeof x==="object").map(x=>({name:String(x.name==null?"":x.name),val:num(x.val),type:x.type==="thb"?"thb":"pct"}));
+        if(JSON.stringify(cleaned)!==JSON.stringify(feesBy[k])){ feesBy[k]=cleaned; changed=true; }
+      }
+    });
+    fees=feesBy[platform];
+  }
+  if(m.aff_vat!=null){ const v=String(m.aff_vat)==="1"?"1":"0"; if($("affVat").value!==v){ $("affVat").value=v; changed=true; } }
+  if(changed){ renderFees(); calc(); }
+}
+
+/* ---- โหลดข้อมูลทั้งหมด (แบ่งหน้า + ตรวจกับ get_totals) ----
+   - products / sales ดึงทีละ 1,000 แถวจนหมด (ไม่ใช้ข้อมูลบางส่วนคำนวณยอดรวม)
+   - แล้วเทียบจำนวนและผลรวมกับ get_totals() ของเซิร์ฟเวอร์ ถ้าไม่ตรงจะลองใหม่ ถ้ายังไม่ตรง "ไม่แสดงยอดรวม" (salesOK/prodOK = false)
+   - แทนที่ข้อมูลทั้งชุดเสมอ ไม่ต่อท้าย จึงไม่ซ้ำ · คำตอบเก่าที่มาช้ากว่าถูกทิ้ง
+   - คืน true เมื่อข้อมูลบนจอตรงกับเซิร์ฟเวอร์ · ไม่โยน error */
+const PAGE=1000, MAXPAGES=100;
+async function fetchAll(table,orders){
+  const rows=[];
+  for(let pg=0;pg<MAXPAGES;pg++){
+    const from=pg*PAGE;
+    const part=await q(()=>{ let b=sb.from(table).select("*"); orders.forEach(o=>{ b=b.order(o[0],{ascending:o[1]}); }); return b.range(from,from+PAGE-1); });
+    rows.push(...(part||[]));
+    if(!part||part.length<PAGE) return rows;
+  }
+  throw new AppErr("ข้อมูล "+table+" มากเกินกว่าจะโหลดทั้งหมด","other");
+}
+const uniq=rows=>{ const m=new Map(); rows.forEach(r=>m.set(r.id,r)); return [...m.values()]; };
+function verifyTotals(t,prod,sal){
+  const n=x=>num(x), sum=(a,k)=>a.reduce((s,r)=>s+n(r[k]),0), close=(a,b)=>Math.abs(a-b)<0.01;
+  const act=sal.filter(s=>!s.cancelled_at), live=prod.filter(p=>!p.deleted_at);
+  const sales=sal.length===n(t.sales_all)&&act.length===n(t.sales_active)&&(sal.length-act.length)===n(t.sales_cancelled)&&
+    sum(act,"qty")===n(t.active_qty)&&close(sum(act,"revenue"),n(t.active_revenue))&&close(sum(act,"fees"),n(t.active_fees))&&
+    close(sum(act,"cogs"),n(t.active_cogs))&&close(sum(act,"profit"),n(t.active_profit));
+  const prods=prod.length===n(t.products)&&live.length===n(t.products_active)&&sum(live,"qty")===n(t.stock_qty)&&
+    close(live.reduce((s,p)=>s+n(p.cost)*n(p.qty),0),n(t.stock_cost_value));
+  return {sales,prods};
+}
+async function loadAll(){
+  if(!sb||!loggedIn) return false;
+  const seq=++loadSeq;
+  try{
+    let got=null;
+    for(let attempt=0;attempt<3;attempt++){
+      const [tot,prow,srow,mv,st]=await Promise.all([
+        q(()=>sb.rpc("get_totals")),
+        fetchAll("products",[["sku",true],["id",true]]),
+        fetchAll("sales",[["created_at",false],["id",false]]),
+        q(()=>sb.from("stock_moves").select("*").order("created_at",{ascending:false}).limit(25)),
+        q(()=>sb.from("app_settings").select("key,value"))]);
+      if(seq!==loadSeq||!loggedIn) return true;          // มีการโหลดใหม่กว่าแล้ว
+      const P=uniq(prow), Sl=uniq(srow);
+      got={tot,P,Sl,mv,st,v:verifyTotals(tot||{},P,Sl)};
+      if(got.v.sales&&got.v.prods) break;
+      if(attempt<2){ await new Promise(r=>setTimeout(r,500)); if(seq!==loadSeq||!loggedIn) return true; }
+    }
+    const all=got.P.map(mapProduct);
+    S.products=all.filter(x=>!x.deletedAt); S.hidden=all.filter(x=>x.deletedAt);
+    S.moves=(got.mv||[]).map(mapMove);
+    const sales=got.Sl.map(mapSale);
+    S.sales=sales.filter(x=>!x.cancelledAt); S.cancelledCount=sales.length-S.sales.length;
+    S.totals=got.tot; S.salesOK=got.v.sales; S.prodOK=got.v.prods; S.ready=true;
+    applySettings(got.st);
+    renderInv(); renderHidden(); renderDash();
+    if(!(S.salesOK&&S.prodOK)){
+      setStatus(false,"ข้อมูลไม่ครบ · แตะเพื่อลองใหม่",true);
+      showBanner((staleAfterWrite?"บันทึกสำเร็จ แต่รีเฟรชข้อมูลไม่สำเร็จ · ":"")+"ข้อมูลที่โหลดมาไม่ตรงกับยอดรวมของเซิร์ฟเวอร์ จึงไม่แสดงยอดรวมเพื่อกันตัวเลขผิด แตะแถบสถานะเพื่อโหลดใหม่","warn",0,"load");
+      return false;
+    }
+    staleAfterWrite=false;
+    if(bannerCtx==="load"||bannerCtx==="stale") hideBanner();
+    setLive(live);
+    return true;
+  }catch(er){
+    if(seq!==loadSeq||!loggedIn) return true;
+    if(er.kind==="auth") return false;                   // lostAuth() จัดการแล้ว
+    if(er.kind==="not_owner"){ if(window.SS_authLost) window.SS_authLost("บัญชีนี้ไม่ใช่เจ้าของร้าน ไม่มีสิทธิ์เข้าใช้งาน"); return false; }
+    setStatus(false,"โหลดข้อมูลไม่สำเร็จ · แตะเพื่อลองใหม่",true);
+    showBanner((staleAfterWrite?"บันทึกสำเร็จ แต่รีเฟรชข้อมูลไม่สำเร็จ · ":"โหลดข้อมูลจากฐานข้อมูลไม่สำเร็จ: ")+er.message,"",0,staleAfterWrite?"stale":"load");
+    if(!S.ready){ $("invBody").innerHTML=`<tr><td colspan="8" class="empty">โหลดสินค้าไม่สำเร็จ แตะแถบสถานะด้านบนเพื่อลองใหม่</td></tr>`; }
+    return false;
+  }
+}
+/* เรียกหลัง RPC "สำเร็จแล้ว" เท่านั้น: ถ้ารีเฟรชล้มเหลว ต้องบอกว่า "บันทึกสำเร็จ แต่รีเฟรชไม่สำเร็จ" ห้ามบอกว่าบันทึกล้มเหลว */
+async function afterWrite(){
+  let ok=false; try{ ok=await loadAll(); }catch(e){ ok=false; }
+  if(!ok){ staleAfterWrite=true; showBanner(MSG_STALE,"warn",0,"stale"); }
+  return ok;
+}
+function reloadSoon(ms){ clearTimeout(reloadTimer); reloadTimer=setTimeout(loadAll,ms==null?350:ms); }
+
+/* ---- Realtime: ช่องเดียว · สร้างใหม่ทุกครั้งที่ล็อกอิน · ถอดทุกครั้งที่ออกจากระบบ · เมื่อมีการเปลี่ยนแปลงให้ "โหลดชุดข้อมูลใหม่" (ไม่ต่อท้ายทีละแถว) ---- */
+function setLive(on){ live=on; if(!loggedIn) return;
+  setStatus(on, on?"เชื่อมต่อ Supabase · อัปเดตอัตโนมัติ":"เชื่อมต่อ Supabase · ไม่มีอัปเดตอัตโนมัติ (แตะเพื่อโหลดใหม่)", false); }
+function subscribe(){
+  unsubscribe();
+  const ch=sb.channel("ss-live-"+(++chanSeq));
+  ["products","sales","stock_moves","app_settings"].forEach(t=>ch.on("postgres_changes",{event:"*",schema:"public",table:t},()=>{ if(chan===ch) reloadSoon(); }));
+  chan=ch;
+  ch.subscribe(stt=>{ if(chan!==ch) return;
+    if(stt==="SUBSCRIBED"){ setLive(true); reloadSoon(0); }                 // โหลดซ้ำ 1 ครั้งกันพลาดช่วงก่อนเชื่อมต่อ
+    else if(stt==="CHANNEL_ERROR"||stt==="TIMED_OUT"||stt==="CLOSED"){ setLive(false); } });
+}
+/* ส่ง token ของผู้ใช้ให้ Realtime ก่อนสมัครรับข้อมูล (ไม่งั้นอาจใช้ anon key แล้ว RLS กรองเหตุการณ์ทิ้งเงียบๆ) */
+async function startRealtime(){
+  const me=sb;
+  try{ const r=await me.auth.getSession(); const t=r&&r.data&&r.data.session&&r.data.session.access_token;
+       if(t&&me.realtime&&typeof me.realtime.setAuth==="function") me.realtime.setAuth(t); }catch(e){}
+  if(loggedIn&&sb===me) subscribe();
+}
+function unsubscribe(){ if(chan){ const c=chan; chan=null; live=false; try{ sb.removeChannel(c); }catch(e){} } }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&loggedIn) reloadSoon(0); });
+
+window.SS_start=(client)=>{
+  if(loggedIn) return;
+  sb=client; loggedIn=true; S.ready=false; live=false;
+  setStatus(false,"กำลังเชื่อมต่อ…"); renderInv(); startRealtime(); loadAll();
+};
+window.SS_stop=()=>{
+  unsubscribe();
+  loggedIn=false; loadSeq++; clearTimeout(reloadTimer); clearTimeout(settingsTimer); settingsDirty=false; settingsSaving=false;
+  idem.clear(); busy=false;
+  S.products=[]; S.hidden=[]; S.moves=[]; S.sales=[]; S.cancelledCount=0; S.totals=null; S.salesOK=false; S.prodOK=false; S.ready=false; staleAfterWrite=false;   // ล้างข้อมูลธุรกิจออกจากหน่วยความจำเมื่อออกจากระบบ
+  sb=null;
+  closeMove(); resetForm(); hideBanner(); renderInv(); renderHidden(); renderDash();
+};
+
 /* One sale record: % fees on revenue after discount, baht fees once per order. */
 function saleCalc(price, qty, orders, cost, pk, aff, disc){
   const fl=feesBy[pk]||[], vat=$("affVat").value==="1";
-  const gross=r2(price*qty), base=Math.max(r2(gross-disc*orders),0);
+  const dp=n=>Number(n.toPrecision(12));   /* ตัดสัญญาณรบกวนทศนิยมของ float ให้ตรงกับการปัดแบบ numeric ของ Postgres (กรณีครึ่งสตางค์) */
+  const gross=r2(dp(price*qty)), base=Math.max(r2(dp(gross-disc*orders)),0);
   const lines=fl.filter(f=>num(f.val)>0).map(f=>({name:f.name||"ค่าธรรมเนียม",amt:f.type==="pct"?r2(base*f.val/100):r2(f.val*orders)}));
   if(aff>0) lines.push({name:`Affiliate ${fmt(aff)}%${vat?" (+VAT)":""}`,amt:r2(base*aff/100*(vat?1.07:1))});
   const fees=r2(lines.reduce((a,l)=>a+l.amt,0)), payout=r2(base-fees), cogs=r2(cost*qty), profit=r2(payout-cogs);
   return {gross,base,lines,fees,payout,cogs,profit};
-}
-
-async function putProduct(p){
-  const {id,...body}=p;
-  if(db){ await db.collection("products").doc(id).set(body); }
-  else { const i=S.products.findIndex(x=>x.id===id); if(i>=0) S.products[i]=p; else S.products.push(p); persistLocal(); }
-}
-async function removeProduct(id){
-  if(db){ await db.collection("products").doc(id).delete(); }
-  else { S.products=S.products.filter(x=>x.id!==id); persistLocal(); }
-}
-async function logMove(m){
-  const body={...m,at:Date.now()};
-  if(db){ try{ await db.collection("moves").doc("m"+uid()).set(body); }catch(e){} }
-  else { S.moves.unshift({id:"m"+uid(),...body}); persistLocal(); }
-}
-function dbErrText(e){
-  const c=e&&e.code;
-  if(c==="quota_exceeded") return "ฐานข้อมูลเต็ม ลบสินค้าที่ไม่ใช้แล้วลองใหม่";
-  if(c==="resource_exhausted") return "บันทึกถี่เกินไป รอสักครู่แล้วลองใหม่";
-  return "บันทึกไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองใหม่";
 }
 
 /* ---------- inventory ---------- */
@@ -778,20 +1036,33 @@ function resetForm(){
 }
 $("pCancel").onclick=resetForm;
 $("prodForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+  e.preventDefault(); if(busy||!loggedIn) return;
   const sku=$("pSku").value.trim(), name=$("pName").value.trim();
   if(!sku||!name){ $("pErr").textContent="กรอกรหัสสินค้าและชื่อสินค้าให้ครบ"; return; }
-  if(S.products.some(p=>p.id!==editingId && String(p.sku).toLowerCase()===sku.toLowerCase())){ $("pErr").textContent=`รหัส ${sku} มีอยู่แล้ว ใช้รหัสอื่นหรือแก้ไขรายการเดิม`; return; }
+  if(S.products.some(p=>p.id!==editingId && String(p.sku).trim().toLowerCase()===sku.toLowerCase())){ $("pErr").textContent=`รหัส ${sku} มีอยู่แล้ว ใช้รหัสอื่นหรือแก้ไขรายการเดิม`; return; }
   const old=S.products.find(p=>p.id===editingId);
-  const p={ id:editingId||uid(), sku, name, cost:r2(num($("pCost").value)), qty:old?num(old.qty):Math.max(0,Math.round(num($("pQty").value))),
-            price:$("pPrice").value===""?null:r2(num($("pPrice").value)), minQty:Math.max(0,Math.round(num($("pMin").value))), updatedAt:Date.now() };
-  $("pSave").disabled=true;
-  try{
-    await putProduct(p);
-    await logMove(old?{type:"edit",pid:p.id,sku,name,qty:0}:{type:"new",pid:p.id,sku,name,qty:p.qty,cost:p.cost});
+  const cost=r2(num($("pCost").value)), qty=Math.max(0,Math.round(num($("pQty").value))),
+        price=$("pPrice").value===""?null:r2(num($("pPrice").value)), minQty=Math.max(0,Math.round(num($("pMin").value)));
+  $("pErr").textContent="";
+  await write($("pSave"),async()=>{
+    let sig=null, res, fn;
+    try{
+      if(old){
+        fn="update_product";
+        res=await callRpc(fn,{p_id:old.id,p_sku:sku,p_name:name,p_cost:cost,p_price:price,p_min_qty:minQty});
+      } else {
+        fn="create_product";
+        sig=JSON.stringify([fn,sku,name,cost,qty,price,minQty]);
+        const id=idemKey(sig,"p");
+        res=await callRpc(fn,{p_id:id,p_sku:sku,p_name:name,p_cost:cost,p_qty:qty,p_price:price,p_min_qty:minQty});
+      }
+    }catch(err){ idemSettle(sig,err); $("pErr").textContent=errText(err); return; }   // ล้มเหลวจริง/ไม่ทราบผล (เก็บคีย์ไว้ส่งซ้ำ)
+    idemSettle(sig,null);
+    // ---- จากจุดนี้ RPC สำเร็จแล้ว: ห้ามรายงานว่าบันทึกล้มเหลว ----
+    if(!shapeOK(fn,res)) showBanner("เซิร์ฟเวอร์ตอบกลับในรูปแบบที่ไม่คาดคิด ตรวจรายการในตารางก่อน อย่ากดบันทึกซ้ำ","warn",9000);
     resetForm();
-  }catch(err){ $("pErr").textContent=dbErrText(err); }
-  $("pSave").disabled=false;
+    await afterWrite();
+  },"กำลังบันทึก…");
 });
 
 function startEdit(p){
@@ -810,6 +1081,7 @@ function renderInv(){
   $("invCount").textContent=S.products.length+" รายการ";
   const body=$("invBody");
   if(!S.ready){ body.innerHTML=`<tr><td colspan="8" class="empty">กำลังโหลดสินค้า…</td></tr>`; return; }
+  if(!S.prodOK){ body.innerHTML=`<tr><td colspan="8" class="empty">โหลดรายการสินค้าไม่ครบหรือไม่ตรงกับเซิร์ฟเวอร์ แตะแถบสถานะด้านบนเพื่อโหลดใหม่</td></tr>`; return; }
   if(!S.products.length){ body.innerHTML=`<tr><td colspan="8" class="empty">ยังไม่มีสินค้าในคลัง<br>กรอกรหัส ชื่อ ราคาทุน และจำนวนในฟอร์มด้านบนเพื่อเพิ่มสินค้าชิ้นแรก</td></tr>`; return; }
   if(!list.length){ body.innerHTML=`<tr><td colspan="8" class="empty">ไม่พบสินค้าที่ตรงกับการค้นหา</td></tr>`; return; }
   body.innerHTML=list.map(p=>{const st=statusOf(p);return `<tr data-id="${esc(p.id)}">
@@ -820,7 +1092,7 @@ function renderInv(){
     <td><div class="acts">
       <button class="btn sm" data-a="in">รับเข้า</button><button class="btn sm" data-a="out">เบิกออก</button>
       <button class="btn sm" data-a="calc" title="คำนวณกำไรของสินค้านี้">คำนวณ</button>
-      <button class="btn sm" data-a="edit">แก้ไข</button><button class="btn sm danger" data-a="del">ลบ</button>
+      <button class="btn sm" data-a="edit">แก้ไข</button><button class="btn sm danger${isArmed("del:"+p.id)?" armed":""}" data-a="del">${isArmed("del:"+p.id)?"ยืนยันซ่อน":"ซ่อน"}</button>
     </div></td></tr>`;}).join("");
 }
 $("invBody").addEventListener("click",async e=>{
@@ -832,16 +1104,40 @@ $("invBody").addEventListener("click",async e=>{
   else if(a==="calc"){ $("cost").value=num(p.cost); if(p.price!=null) $("price").value=num(p.price);
     $("fromProduct").textContent="จากคลัง: "+p.sku; $("fromProduct").hidden=false; calc(); showTab("calc"); window.scrollTo({top:0,behavior:"smooth"}); }
   else if(a==="del"){
-    if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="ยืนยันลบ"; setTimeout(()=>{b.classList.remove("armed");b.textContent="ลบ";},3000); return; }
-    try{ await removeProduct(p.id); await logMove({type:"out",pid:p.id,sku:p.sku,name:p.name+" (ลบสินค้า)",qty:num(p.qty)}); if(editingId===p.id) resetForm(); }catch(err){ alertInline(dbErrText(err)); }
+    if(!isArmed("del:"+p.id)){ arm("del:"+p.id,renderInv); return; }
+    armedUntil.delete("del:"+p.id);
+    await write(b,async()=>{
+      let res;
+      try{ res=await callRpc("delete_product",{p_id:p.id}); }catch(err){ alertInline(errText(err)); return; }
+      if(!shapeOK("delete_product",res)){ showBanner("ไม่พบสินค้านี้ในระบบ (อาจถูกเปลี่ยนจากเครื่องอื่น) กำลังโหลดข้อมูลใหม่","warn",7000); await afterWrite(); return; }
+      if(editingId===p.id) resetForm();
+      if(await afterWrite()) showBanner(`ซ่อน ${p.sku} แล้ว (สต็อกคงเดิม กู้คืนได้ที่ "สินค้าที่ซ่อนไว้" ใต้ตาราง)`,"ok",5000);
+    },"กำลังซ่อน…");
   }
 });
 function alertInline(t){ $("pErr").textContent=t; }
 ["q","fStatus","sortBy"].forEach(id=>$(id).addEventListener("input",renderInv));
 
+
+function renderHidden(){
+  const box=$("hiddenBox"); box.hidden=!S.hidden.length;
+  $("hiddenN").textContent=S.hidden.length+" รายการ";
+  $("hiddenBody").innerHTML=S.hidden.map(p=>`<div class="hrow" data-id="${esc(p.id)}"><span class="sku">${esc(p.sku)}</span><span class="nm">${esc(p.name)}</span><span class="hint">คงเหลือ ${fmt0(num(p.qty))} ชิ้น</span><button class="btn sm" type="button" data-a="restore">กู้คืน</button></div>`).join("");
+}
+$("hiddenBody").addEventListener("click",async e=>{
+  const b=e.target.closest("button[data-a=restore]"); if(!b) return;
+  const id=b.closest(".hrow").dataset.id;
+  await write(b,async()=>{
+    let res;
+    try{ res=await callRpc("restore_product",{p_id:id}); }catch(err){ showBanner(errText(err),"",9000); return; }
+    if(!shapeOK("restore_product",res)) showBanner("เซิร์ฟเวอร์ตอบกลับในรูปแบบที่ไม่คาดคิด ตรวจรายการก่อนทำต่อ","warn",9000);
+    if(await afterWrite()) showBanner("กู้คืนสินค้าแล้ว","ok",3500);
+  },"กำลังกู้คืน…");
+});
+
 /* stock movement modal */
 let mv=null;
-const lastSale=ls.get("ss-lastsale")||{};
+const lastSale=ls.get("ss2-lastsale")||{};
 function setKind(k){ if(!mv) return; mv.kind=k;
   $("mKind").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===k)));
   const sale=mv.type==="out"&&k==="sale";
@@ -883,39 +1179,60 @@ $("mClose").onclick=closeMove;
 $("scrim").addEventListener("click",e=>{ if(e.target.id==="scrim") closeMove(); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("scrim").hidden) closeMove(); });
 $("mOk").onclick=async()=>{
-  if(!mv) return; const p=mv.p, q=Math.round(num($("mQty").value)), oq=num(p.qty), oc=num(p.cost);
-  if(q<=0){ $("mErr").textContent="ใส่จำนวนอย่างน้อย 1 ชิ้น"; return; }
-  if(mv.type==="out"&&q>oq){ $("mErr").textContent=`เบิกได้ไม่เกิน ${fmt0(oq)} ชิ้น`; return; }
-  let np;
-  if(mv.type==="in"){ const c=num($("mCost").value), nq=oq+q; np={...p,qty:nq,cost:nq>0?r2((oq*oc+q*c)/nq):c,updatedAt:Date.now()}; }
-  else np={...p,qty:oq-q,updatedAt:Date.now()};
+  if(!mv||busy||!loggedIn) return; const p=mv.p, q0=Math.round(num($("mQty").value)), oq=num(p.qty), oc=num(p.cost);
+  if(q0<=0){ $("mErr").textContent="ใส่จำนวนอย่างน้อย 1 ชิ้น"; return; }
+  if(mv.type==="out"&&q0>oq){ $("mErr").textContent=`เบิกได้ไม่เกิน ${fmt0(oq)} ชิ้น`; return; }
+  const note=$("mNote").value.trim();
   const isSale=mv.type==="out"&&mv.kind==="sale";
-  let sale=null;
-  if(isSale){
-    const price=num($("mPrice").value), orders=Math.max(1,Math.round(num($("mOrders").value))), pk=$("mPlat").value, aff=num($("mAff").value), disc=num($("mDisc").value);
+  let args=null, c=null, pk=null, aff=0;
+  if(mv.type==="in"){
+    const cost=r2(num($("mCost").value));
+    if(cost<0){ $("mErr").textContent="ราคาทุนต้องไม่ติดลบ"; return; }
+    args={p_product_id:p.id,p_qty:q0,p_cost:cost,p_note:note||null};
+  } else if(!isSale){
+    args={p_product_id:p.id,p_qty:q0,p_note:note||null};
+  } else {
+    const price=num($("mPrice").value), orders=Math.max(1,Math.round(num($("mOrders").value))), disc=num($("mDisc").value);
+    pk=$("mPlat").value; aff=num($("mAff").value);
     if(price<=0){ $("mErr").textContent="ใส่ราคาขายต่อชิ้น"; return; }
-    if(orders>q){ $("mErr").textContent="จำนวนออเดอร์ต้องไม่เกินจำนวนชิ้น"; return; }
-    const c=saleCalc(price,q,orders,oc,pk,aff,disc);
-    sale={id:"s"+uid(),pid:p.id,sku:p.sku,name:p.name,qty:q,orders,price,disc,platform:pk,platformLabel:PLATFORMS[pk].label,aff,
-          revenue:c.base,fees:c.fees,payout:c.payout,cogs:c.cogs,profit:c.profit,feeLines:c.lines,note:$("mNote").value.trim(),at:Date.now()};
-    lastSale.plat=pk; lastSale.aff={...(lastSale.aff||{}),[pk]:aff}; ls.set("ss-lastsale",lastSale);
+    if(orders>q0){ $("mErr").textContent="จำนวนออเดอร์ต้องไม่เกินจำนวนชิ้น"; return; }
+    if(disc<0){ $("mErr").textContent="ส่วนลดต้องไม่ติดลบ"; return; }
+    if(aff<0||aff>100){ $("mErr").textContent="Affiliate ต้องอยู่ระหว่าง 0 ถึง 100%"; return; }
+    c=saleCalc(price,q0,orders,oc,pk,aff,disc);   // ตัวอย่างบนจอ · เซิร์ฟเวอร์คำนวณยอดจริงเองแล้วเราเทียบกลับ
+    args={p_product_id:p.id,p_qty:q0,p_orders:orders,p_price:price,p_discount:disc,p_platform:pk,p_platform_label:PLATFORMS[pk].label,
+          p_aff_pct:aff,p_fee_lines:c.lines.map(l=>({name:l.name,amt:l.amt})),p_note:note||null};
   }
-  $("mOk").disabled=true;
-  try{
-    await putProduct(np);
-    if(sale) await putSale(sale);
-    const note=sale?`ขาย ${sale.platformLabel} @${fmt(sale.price)}${$("mNote").value.trim()?" · "+$("mNote").value.trim():""}`:$("mNote").value.trim();
-    await logMove({type:mv.type,pid:p.id,sku:p.sku,name:p.name,qty:q,cost:mv.type==="in"?num($("mCost").value):oc,note});
+  $("mErr").textContent="";
+  await write($("mOk"),async()=>{
+    const fn=mv.type==="in"?"stock_in":(isSale?"record_sale":"stock_out");
+    const sig=JSON.stringify([fn,args]);
+    let res;
+    try{
+      const id=idemKey(sig,isSale?"s":"m");                      // ส่งซ้ำด้วยข้อมูลเดิม = ใช้คีย์เดิม
+      res=await callRpc(fn,isSale?{p_sale_id:id,...args}:{p_move_id:id,...args});
+    }catch(err){ idemSettle(sig,err); $("mErr").textContent=errText(err); return; }
+    idemSettle(sig,null);
+    // ---- จากจุดนี้ RPC สำเร็จแล้ว: ห้ามรายงานว่าบันทึกล้มเหลว ----
+    try{
+      if(!shapeOK(fn,res)) showBanner("เซิร์ฟเวอร์ตอบกลับในรูปแบบที่ไม่คาดคิด ตรวจรายการก่อน อย่ากดบันทึกซ้ำ","warn",9000);
+      else if(isSale){
+        lastSale.plat=pk; lastSale.aff={...(lastSale.aff||{}),[pk]:aff}; ls.set("ss2-lastsale",lastSale);
+        const d=(a,b)=>Math.abs(num(a)-num(b))>0.011;
+        if(d(res.revenue,c.base)||d(res.fees,c.fees)||d(res.profit,c.profit)){
+          showBanner(`ตัวเลขจากเซิร์ฟเวอร์ต่างจากที่คำนวณบนจอ · ยอดขาย ${fmt(num(res.revenue))} (จอ ${fmt(c.base)}) · ค่าธรรมเนียม ${fmt(num(res.fees))} (จอ ${fmt(c.fees)}) · กำไร ${fmt(num(res.profit))} (จอ ${fmt(c.profit)}) · ใช้ตัวเลขของเซิร์ฟเวอร์เป็นหลัก`,"warn",0);
+        }
+      }
+    }catch(e){}
     closeMove();
-  }catch(err){ $("mErr").textContent=dbErrText(err); }
-  $("mOk").disabled=false;
+    await afterWrite();
+  },"กำลังบันทึก…");
 };
 
 /* ---------- dashboard ---------- */
 function when(t){ const d=(Date.now()-t)/1000; if(d<60) return "เมื่อสักครู่"; if(d<3600) return Math.floor(d/60)+" นาทีที่แล้ว"; if(d<86400) return Math.floor(d/3600)+" ชม.ที่แล้ว";
   return new Date(t).toLocaleDateString("th-TH",{day:"numeric",month:"short"}); }
-let period=ls.get("ss-period")||"30";
-function setPeriod(p){ period=p; ls.set("ss-period",p);
+let period=ls.get("ss2-period")||"30";
+function setPeriod(p){ period=p; ls.set("ss2-period",p);
   $("dPeriod").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.p===p))); renderDash(); }
 $("dPeriod").querySelectorAll("button").forEach(b=>b.onclick=()=>setPeriod(b.dataset.p));
 $("dPeriod").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.p===period)));
@@ -923,6 +1240,9 @@ const dayStart=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime();};
 const PLABEL={today:"วันนี้","7":"7 วันล่าสุด","30":"30 วันล่าสุด",all:"ทั้งหมด"};
 
 function renderSales(){
+  if(!S.salesOK){ ["sProfit","sRev","sFee","sQty"].forEach(id=>$(id).textContent="–"); ["sProfitS","sRevS","sFeeS","sQtyS"].forEach(id=>$(id).textContent="ข้อมูลยอดขายยังไม่ครบ ไม่แสดงยอดรวม");
+    $("sDays").innerHTML=""; $("sPlat").innerHTML=`<tr><td colspan="6" class="empty">โหลดรายการขายไม่ครบหรือไม่ตรงกับเซิร์ฟเวอร์ จึงไม่แสดงสรุป</td></tr>`; $("sTop").innerHTML=`<div class="hint">ยังไม่มีข้อมูลที่ตรวจแล้ว</div>`;
+    $("sCount").textContent="–"; $("sList").innerHTML=`<div class="empty">แตะแถบสถานะด้านบนเพื่อโหลดใหม่</div>`; return; }
   const now=Date.now(), t0=dayStart(now);
   const from=period==="today"?t0:period==="all"?0:t0-(num(period)-1)*86400000;
   const L=S.sales.filter(s=>num(s.at)>=from);
@@ -954,30 +1274,34 @@ function renderSales(){
     :`<div class="hint">ยังไม่มีข้อมูล</div>`;
 
   // recent sales
-  $("sCount").textContent=L.length+" รายการ";
+  $("sCount").textContent=L.length+" รายการ"+(S.cancelledCount?` · ยกเลิกแล้ว ${S.cancelledCount} (ไม่นับในยอด)`:"")+" · ตรวจกับยอดรวมเซิร์ฟเวอร์แล้ว";
   $("sList").innerHTML=L.length?L.slice(0,15).map(s=>`<div class="sale-row" data-id="${esc(s.id)}">
       <span class="plat-chip">${esc(s.platformLabel||s.platform)}</span>
       <span class="what">${esc(s.sku)} · ${esc(s.name)}<br><span class="hint">${fmt0(num(s.qty))} ชิ้น × ${fmt(num(s.price))}${num(s.aff)>0?` · Aff ${fmt(num(s.aff))}%`:""} · ${when(num(s.at))}</span></span>
       <span class="amt">${fmt(num(s.revenue))}<small style="color:var(${num(s.profit)<0?'--neg':'--good'})">กำไร ${fmt(num(s.profit))}</small></span>
-      <button class="btn sm danger" data-a="cancel">ยกเลิก</button></div>`).join("")
+      <button class="btn sm danger${isArmed("cancel:"+s.id)?" armed":""}" data-a="cancel">${isArmed("cancel:"+s.id)?"ยืนยัน":"ยกเลิก"}</button></div>`).join("")
     :`<div class="empty">ยังไม่มีรายการขายในช่วงนี้</div>`;
 }
 $("sList").addEventListener("click",async e=>{
-  const b=e.target.closest("button[data-a=cancel]"); if(!b) return;
+  const b=e.target.closest("button[data-a=cancel]"); if(!b||busy||!loggedIn) return;
   const s=S.sales.find(x=>x.id===b.closest(".sale-row").dataset.id); if(!s) return;
-  if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="ยืนยัน"; setTimeout(()=>{b.classList.remove("armed");b.textContent="ยกเลิก";},3000); return; }
-  b.disabled=true;
-  try{
-    const p=S.products.find(x=>x.id===s.pid);
-    if(p) await putProduct({...p,qty:num(p.qty)+num(s.qty),updatedAt:Date.now()});
-    await removeSale(s.id);
-    await logMove({type:"in",pid:s.pid,sku:s.sku,name:s.name,qty:num(s.qty),note:"ยกเลิกรายการขาย "+(s.platformLabel||"")});
-  }catch(err){ b.disabled=false; b.textContent="ลองใหม่"; }
+  if(!isArmed("cancel:"+s.id)){ arm("cancel:"+s.id,renderDash); return; }
+  armedUntil.delete("cancel:"+s.id);
+  const ok=await write(b,async()=>{
+    let res;
+    try{ res=await callRpc("cancel_sale",{p_sale_id:s.id}); }
+    catch(err){ showBanner("ยกเลิกรายการขายไม่สำเร็จ: "+errText(err),"",9000); return false; }
+    if(!shapeOK("cancel_sale",res)) showBanner("เซิร์ฟเวอร์ตอบกลับในรูปแบบที่ไม่คาดคิด ตรวจรายการก่อนทำต่อ","warn",9000);
+    await afterWrite();
+    return true;
+  },"กำลังยกเลิก…");
+  if(ok===false){ b.textContent="ลองใหม่"; }
 });
 
 function renderDash(){
   if($("dash").hidden) return;
   renderSales();
+  if(!S.prodOK){ ["dValue","dSale","dProfit","dQty"].forEach(id=>$(id).textContent="–"); $("dBars").innerHTML=""; $("dLow").innerHTML=""; $("dMix").innerHTML=""; $("dMixLeg").innerHTML=""; $("dFeed").innerHTML=""; $("dSaleS").textContent="ข้อมูลสินค้ายังไม่ครบ ไม่แสดงยอดรวม"; return; }
   const P=S.products, aff=num($("affNum").value);
   let value=0, sale=0, qty=0, profit=0, priced=0, unpriced=0;
   P.forEach(p=>{ const q=num(p.qty), c=num(p.cost); value+=q*c; qty+=q;
@@ -1017,20 +1341,19 @@ $("aff").value=Math.min(num($("affNum").value),30);
 $("affOut").textContent=fmt(num($("affNum").value))+"%";
 ["cost","price","discount","ship","extra","target"].forEach(k=>$(k).addEventListener("input",calc));
 ["cost","price"].forEach(k=>$(k).addEventListener("input",()=>$("fromProduct").hidden=true));
-$("affVat").addEventListener("change",calc);
+$("affVat").addEventListener("change",()=>{calc();markSettings();});
 $("aff").addEventListener("input",e=>syncAff(e.target));
 $("affNum").addEventListener("input",e=>syncAff(e.target));
-$("addFee").onclick=()=>{fees.push({name:"ค่าธรรมเนียมอื่น",val:0,type:"pct"});renderFees();calc();};
-$("preset").onclick=()=>{feesBy[platform]=clone(PLATFORMS[platform].fees);fees=feesBy[platform];renderFees();calc();};
+$("addFee").onclick=()=>{fees.push({name:"ค่าธรรมเนียมอื่น",val:0,type:"pct"});renderFees();calc();markSettings();};
+$("preset").onclick=()=>{feesBy[platform]=clone(PLATFORMS[platform].fees);fees=feesBy[platform];renderFees();calc();markSettings();};
 $("reset").onclick=()=>{ ["cost","price","discount","ship","extra","target"].forEach(k=>$(k).value=0);
   $("affNum").value=0; $("aff").value=0; $("affOut").textContent="0.00%";
-  Object.keys(PLATFORMS).forEach(k=>feesBy[k]=clone(PLATFORMS[k].fees)); fees=feesBy[platform]; renderFees(); calc(); };
+  Object.keys(PLATFORMS).forEach(k=>feesBy[k]=clone(PLATFORMS[k].fees)); fees=feesBy[platform]; renderFees(); calc(); markSettings(); };
 const h=(location.hash||"").slice(1);
-showTab(["calc","stock","dash"].includes(h)?h:(ls.get("ss-tab")||"calc"));
+showTab(["calc","stock","dash"].includes(h)?h:(ls.get("ss2-tab")||"calc"));
 calc(); renderInv();
-/* The database connects only after login. */
-let started=false;
-window.SS_start=()=>{ if(!started){ started=true; initStore(); } };
+/* ข้อมูลเชื่อมต่อ Supabase หลังล็อกอินสำเร็จเท่านั้น (SS_start ถูกเรียกจากส่วน Auth ด้านล่าง) */
+window.SS_flush=async()=>{ clearTimeout(settingsTimer); if(settingsDirty){ await saveSettings(); } };
 </script>
 
 <script>
@@ -1042,7 +1365,8 @@ const Mascot=(()=>{
   let tx=0,ty=0,cx=0,cy=0, raf=0, running=false, lastInput=0, focusEl=null, covered=false, wanderT=0, blinkT=0, locked=false;
 
   function aimAt(x,y){
-    const r=head.getBoundingClientRect(), hx=r.left+r.width/2, hy=r.top+r.height*.5;
+    const r=head.getBoundingClientRect(); if(!r.width||!r.height) return;   // หน้า Login ซ่อนอยู่: ห้ามคำนวณ ไม่งั้นได้ NaN แล้วหน้าแมวค้างถาวร (บั๊กเดิมในต้นฉบับ)
+    const hx=r.left+r.width/2, hy=r.top+r.height*.5;
     let dx=(x-hx)/(r.width*.9), dy=(y-hy)/(r.height*1.1);
     const len=Math.hypot(dx,dy); if(len>1){dx/=len;dy/=len;}   // clamp: eyes never leave the iris
     tx=dx; ty=dy;
@@ -1108,34 +1432,84 @@ const Mascot=(()=>{
     success(){ locked=true; covered=false; root.classList.remove("cover","peek","m-o","m-sad"); root.classList.add("m-happy"); flash("hop",700); heart(); setTimeout(heart,180); setTimeout(heart,360); },
     fail(){ root.classList.remove("cover","peek","m-o","m-happy"); covered=false; root.classList.add("m-sad"); flash("shake",650); tx=0; ty=.7; lastInput=performance.now();
       setTimeout(()=>root.classList.remove("m-sad"),1600); },
-    reset(){ locked=false; root.classList.remove("m-happy","m-sad","m-o","cover","peek","hop","shake"); covered=false; focusEl=null; }
+    reset(){ locked=false; cx=cy=tx=ty=0; root.classList.remove("m-happy","m-sad","m-o","cover","peek","hop","shake"); covered=false; focusEl=null; }
   };
 })();
 
-/* ===== Auth: checks the code locally. Only events, never the value, go to the mascot. ===== */
+/* ===== Auth: Supabase Auth (อีเมล + รหัสผ่าน) · น้องแมวได้รับเฉพาะ "เหตุการณ์" ไม่เคยได้รับค่าที่พิมพ์ในช่องรหัสผ่าน ===== */
 (()=>{
-  const HASH="4205501b2d802fd46d82e42f1e87718fe13ddd49816614655c0a43ddd34d664e";
-  const TOKEN="ss-auth", login=document.getElementById("login"), app=document.getElementById("app");
-  const form=document.getElementById("lgForm"), pw=document.getElementById("lgPw");
+  const cfg=window.SS_CONFIG||{};
+  const login=document.getElementById("login"), app=document.getElementById("app");
+  const form=document.getElementById("lgForm"), em=document.getElementById("lgEm"), pw=document.getElementById("lgPw");
   const msg=document.getElementById("lgMsg"), btn=document.getElementById("lgBtn"), show=document.getElementById("lgShow");
-  let fails=0, lockUntil=0, lockTimer=0;
-  const ss={get(){try{return sessionStorage.getItem(TOKEN)}catch(e){return null}},set(v){try{v?sessionStorage.setItem(TOKEN,v):sessionStorage.removeItem(TOKEN)}catch(e){}}};
+  let fails=0, lockUntil=0, lockTimer=0, client=null, manualOut=false, configBad=false;
+  /* สถานะ Password Recovery: recovering = กำลังอยู่ในขั้นตอนตั้งรหัสผ่านใหม่ (ห้ามเข้าแอปเด็ดขาด), recoveryOK = เซิร์ฟเวอร์ยืนยัน recovery session แล้ว */
+  let recovering=false, recoveryOK=false, pendingInfo=null, rcBusy=false, fgBusy=false, fgUntil=0, recEmail="";
+  const REC_KEY="ss2-recovery", RC_MIN=8;   // REC_KEY เก็บแค่ธง "1" ใน sessionStorage (ไม่มี token ไม่มีรหัสผ่าน)
+  const $q=id=>document.getElementById(id);
+  const rc=$q("rcForm"), rcPw=$q("rcPw"), rcPw2=$q("rcPw2"), rcShow=$q("rcShow"), rcMsg=$q("rcMsg"), rcBtn=$q("rcBtn"), rcAlt=$q("rcAlt"), rcCancel=$q("rcCancel"),
+        rcSub=$q("rcSub"), rcTitle=$q("rcTitle"), rcFields=$q("rcFields");
+  const fg=$q("fgForm"), fgEm=$q("fgEm"), fgMsg=$q("fgMsg"), fgBtn=$q("fgBtn"), fgBack=$q("fgBack"), lgForgot=$q("lgForgot");
+  function setCards(w){ form.hidden=w!=="login"; rc.hidden=w!=="rc"; fg.hidden=w!=="fg"; }
+  function resetRecFields(){ rcPw.value=""; rcPw2.value=""; rcPw.type="password"; rcPw2.type="password"; rcShow.setAttribute("aria-pressed","false");
+    rcShow.setAttribute("aria-label","แสดงรหัสผ่าน"); rcMsg.className="lg-msg"; rcMsg.textContent=""; fgMsg.className="lg-msg"; fgMsg.textContent=""; }
+  const mem={};
+  /* เซสชันเก็บใน sessionStorage (เหมือนเดิม: ปิดแท็บ = ต้องล็อกอินใหม่) ด้วยคีย์ "ss2-auth" ไม่ยุ่งกับ localStorage เดิม */
+  const store={getItem:k=>{try{return sessionStorage.getItem(k)}catch(e){return k in mem?mem[k]:null}},
+               setItem:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){mem[k]=v}},
+               removeItem:k=>{try{sessionStorage.removeItem(k)}catch(e){delete mem[k]}}};
 
-  async function digest(s){
-    if(window.crypto&&crypto.subtle){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
-    return s==="sensei"?HASH:"";
+  function keyRole(k){ try{ const part=k.split(".")[1]; if(!part) return ""; const b=part.replace(/-/g,"+").replace(/_/g,"/"); return String(JSON.parse(atob(b.padEnd(Math.ceil(b.length/4)*4,"="))).role||""); }catch(e){ return ""; } }
+  function configProblem(){
+    const u=String(cfg.SUPABASE_URL||"").trim().replace(/\/+$/,""), k=String(cfg.SUPABASE_KEY||"").trim();
+    if(!u||!k) return "ยังไม่ได้ตั้งค่า Supabase URL และ key ในไฟล์ (ดูคู่มือหัวข้อ \"ตำแหน่งที่ต้องกรอก\")";
+    if(!/^https:\/\/[a-z0-9.-]+$/i.test(u) && !/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(u)) return "Supabase URL ไม่ถูกต้อง ต้องขึ้นต้นด้วย https://";
+    if(/^sb_secret_/i.test(k)||keyRole(k)==="service_role") return "พบ secret / service_role key ซึ่งห้ามใช้ในหน้าเว็บ ใช้ publishable หรือ anon key เท่านั้น";
+    if(!window.supabase||typeof window.supabase.createClient!=="function") return "โหลดไลบรารี Supabase ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วรีเฟรชหน้า";
+    return "";
   }
+  function loginErr(er){
+    const m=String((er&&er.message)||""), c=String((er&&er.code)||""), st=er&&er.status;
+    if(/invalid login credentials/i.test(m)||c==="invalid_credentials") return "อีเมลหรือรหัสผ่านไม่ถูกต้อง ลองอีกครั้ง";
+    if(/email not confirmed/i.test(m)||c==="email_not_confirmed") return "อีเมลนี้ยังไม่ได้ยืนยัน (ยืนยันใน Supabase ก่อน)";
+    if(st===429||/rate limit|too many/i.test(m)||c==="over_request_rate_limit") return "ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่";
+    if(/fetch|network|retryable/i.test(m)||st===0||(er&&er.name==="AuthRetryableFetchError")) return "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่";
+    return "เข้าสู่ระบบไม่สำเร็จ: "+(m||"ไม่ทราบสาเหตุ");
+  }
+  /* ตรวจว่าบัญชีที่ล็อกอินเป็น "เจ้าของร้าน" จริง โดยเรียก get_totals (ไม่ใช่เจ้าของ = not_owner) */
+  async function verifyOwner(){
+    try{
+      const r=await client.rpc("get_totals");
+      if(!r.error) return {ok:true};
+      const m=String(r.error.message||""), c=String(r.error.code||"");
+      if(/not_owner/.test(m)||c==="42501") return {ok:false,hard:true,text:"บัญชีนี้ไม่ใช่เจ้าของร้าน ไม่มีสิทธิ์เข้าใช้งาน"};
+      if(/^PGRST30[123]$/.test(c)||/jwt/i.test(m)) return {ok:false,hard:true,text:"เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่"};
+      if(c==="PGRST202"||c==="42883") return {ok:false,hard:false,text:"ไม่พบฟังก์ชัน get_totals ในฐานข้อมูล (ติดตั้ง SQL ไฟล์ 03 หรือยัง?)"};
+      return {ok:false,hard:false,text:"ตรวจสิทธิ์ไม่สำเร็จ: "+m};
+    }catch(e){ return {ok:false,hard:false,text:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่"}; }
+  }
+  async function localSignOut(){ manualOut=true; try{ await client.auth.signOut({scope:"local"}); }catch(e){} manualOut=false; }
+
   function enterApp(animate){
+    if(recovering) return;   // ระหว่างตั้งรหัสผ่านใหม่ ห้ามเข้าหน้าจัดการร้านไม่ว่าด้วยเหตุใด
     Mascot.stop();
-    const done=()=>{ login.hidden=true; login.classList.remove("leaving"); app.hidden=false; window.SS_start&&window.SS_start(); };
+    const done=()=>{ login.hidden=true; login.classList.remove("leaving"); app.hidden=false; window.SS_start&&window.SS_start(client); };
     if(animate){ login.classList.add("leaving"); setTimeout(done,450); } else done();
   }
-  function showLogin(){
-    ss.set(null); app.hidden=true; login.hidden=false; form.reset(); pw.type="password";
-    show.setAttribute("aria-pressed","false"); msg.textContent=""; msg.className="lg-msg"; btn.disabled=false;
+  function showLogin(note,ok){
+    window.SS_stop&&window.SS_stop();
+    recovering=false; recoveryOK=false; pendingInfo=null; resetRecFields(); setCards("login");
+    app.hidden=true; login.hidden=false; login.classList.remove("leaving"); form.reset(); pw.type="password";
+    show.setAttribute("aria-pressed","false"); show.setAttribute("aria-label","แสดงรหัสผ่าน");
+    msg.className="lg-msg"+(ok?" ok":""); msg.textContent=note||""; btn.disabled=configBad;
     Mascot.reset(); Mascot.start();
   }
+  /* เรียกจากส่วนข้อมูลเมื่อเซสชันหมดอายุและ refresh ไม่ได้ */
+  window.SS_authLost=text=>{ if(app.hidden||manualOut||!client) return; showLogin(text||"เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่"); localSignOut(); };
 
+  em.addEventListener("focus",()=>{ Mascot.cover(false); Mascot.watchField(em); });
+  em.addEventListener("blur",()=>Mascot.unwatch());
+  em.addEventListener("input",()=>Mascot.typing());
   pw.addEventListener("focus",()=>{ Mascot.unwatch(); Mascot.cover(true); Mascot.peek(pw.type==="text"); });
   pw.addEventListener("blur",()=>{ setTimeout(()=>{ if(document.activeElement!==pw && document.activeElement!==show) Mascot.cover(false); },0); });
   pw.addEventListener("input",()=>Mascot.typing());
@@ -1146,32 +1520,258 @@ const Mascot=(()=>{
     Mascot.cover(true); Mascot.peek(vis); pw.focus();
   });
 
+  let submitting=false;
   form.addEventListener("submit",async e=>{
     e.preventDefault();
+    if(configBad||submitting) return;
     const now=Date.now();
     if(now<lockUntil){ msg.textContent=`ลองใหม่ได้ในอีก ${Math.ceil((lockUntil-now)/1000)} วินาที`; return; }
+    const email=em.value.trim();
+    if(!email){ msg.textContent="กรอกอีเมลก่อนเข้าสู่ระบบ"; em.focus(); return; }
     if(!pw.value){ msg.textContent="กรอกรหัสผ่านก่อนเข้าสู่ระบบ"; pw.focus(); return; }
-    btn.disabled=true; Mascot.thinking(); pw.blur(); Mascot.cover(false);
-    const ok=(await digest(pw.value))===HASH;
+    submitting=true; btn.disabled=true; msg.className="lg-msg"; msg.textContent=""; Mascot.thinking(); pw.blur(); Mascot.cover(false);
+    let error=null, text="", hard=false;
+    try{
+      const r=await client.auth.signInWithPassword({email,password:pw.value});
+      error=r.error;
+      if(!error){ const v=await verifyOwner(); if(!v.ok){ error=true; text=v.text; hard=true; await localSignOut(); } }
+      else text=loginErr(error);
+    }catch(ex){ error=true; text=loginErr(ex); }
     pw.value="";
     await new Promise(r=>setTimeout(r,350));
-    if(ok){
+    submitting=false;
+    if(!error){
       fails=0; msg.className="lg-msg ok"; msg.textContent="ยินดีต้อนรับ! กำลังเข้าสู่ระบบ…";
-      ss.set(HASH.slice(0,24)); Mascot.success(); setTimeout(()=>enterApp(true),1150);
+      Mascot.success(); setTimeout(()=>enterApp(true),1150);
     } else {
       fails++; Mascot.fail(); form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
       msg.className="lg-msg";
-      if(fails>=5){ lockUntil=Date.now()+30000; fails=0; msg.textContent="ใส่รหัสผิดหลายครั้ง ลองใหม่ได้ในอีก 30 วินาที";
+      if(fails>=5){ lockUntil=Date.now()+30000; fails=0; msg.textContent="ลองผิดหลายครั้ง ลองใหม่ได้ในอีก 30 วินาที";
         clearInterval(lockTimer); lockTimer=setInterval(()=>{ const left=Math.ceil((lockUntil-Date.now())/1000);
-          if(left<=0){ clearInterval(lockTimer); msg.textContent=""; btn.disabled=false; } else msg.textContent=`ใส่รหัสผิดหลายครั้ง ลองใหม่ได้ในอีก ${left} วินาที`; },1000);
-      } else { msg.textContent="รหัสผ่านไม่ถูกต้อง ลองอีกครั้ง"; btn.disabled=false; setTimeout(()=>pw.focus(),500); }
+          if(left<=0){ clearInterval(lockTimer); msg.textContent=""; btn.disabled=false; } else msg.textContent=`ลองผิดหลายครั้ง ลองใหม่ได้ในอีก ${left} วินาที`; },1000);
+      } else { msg.textContent=text; btn.disabled=false; setTimeout(()=>pw.focus(),500); }
     }
   });
-  document.getElementById("logout").addEventListener("click",showLogin);
+  document.getElementById("logout").addEventListener("click",async()=>{
+    const b=document.getElementById("logout"); b.disabled=true;
+    if(window.SS_flush) await window.SS_flush();           // บันทึกการตั้งค่าที่ค้างอยู่ก่อนออก
+    await localSignOut(); b.disabled=false; showLogin();
+  });
 
-  if(ss.get()===HASH.slice(0,24)) enterApp(false);
-  else { Mascot.start(); }
+  /* ---------- Password Recovery (supabase-js v2: implicit flow → #access_token=…&type=recovery) ---------- */
+  /* อ่านพารามิเตอร์จาก URL (hash และ query) เก็บไว้ในตัวแปรเท่านั้น ไม่เขียนลง storage ไม่แสดงใน console */
+  function readAuthUrl(){
+    let h,q; try{ h=new URLSearchParams((location.hash||"").replace(/^#/,"")); q=new URLSearchParams(location.search||""); }catch(e){ return null; }
+    const g=k=>h.get(k)||q.get(k)||"";
+    const info={type:g("type"),access:h.get("access_token")||"",refresh:h.get("refresh_token")||"",tokenHash:q.get("token_hash")||"",
+      errCode:g("error_code"),err:g("error"),errDesc:g("error_description")};
+    const any=info.access||info.refresh||info.tokenHash||info.errCode||info.err||info.errDesc;
+    return any?info:null;
+  }
+  function scrubUrl(){ try{ history.replaceState(null,"",location.pathname); }catch(e){} }   // ลบ token ออกจาก URL/ประวัติเบราว์เซอร์ทันที
+  const EXPIRED="ลิงก์ตั้งรหัสผ่านหมดอายุหรือถูกใช้ไปแล้ว (ลิงก์ใช้ได้ครั้งเดียวและมีอายุจำกัด) กรุณาขอลิงก์ใหม่";
+  function isNetErr(er){ const m=String((er&&er.message)||""); return /fetch|network|retryable/i.test(m)||(er&&(er.status===0||er.name==="AuthRetryableFetchError")); }
+  function linkErrText(er){
+    const m=String((er&&(er.message||er.errDesc))||""), c=String((er&&(er.code||er.errCode))||""), st=er&&er.status;
+    if(isNetErr(er)) return {text:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ตแล้วกด \"ลองอีกครั้ง\"",net:true};
+    if(st===429||/rate limit|too many/i.test(m)) return {text:"ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่"};
+    return {text:EXPIRED};
+  }
+  /* แสดงหน้า recovery ตามสถานะ: checking | ready | error */
+  function rcState(s,text,opt){
+    setCards("rc"); login.hidden=false; app.hidden=true; Mascot.start();
+    rcBtn.hidden=s!=="ready"; rcFields.hidden=s!=="ready"; rcAlt.hidden=s!=="error"; rcBtn.disabled=false;
+    rcMsg.className="lg-msg"; rcMsg.textContent="";
+    if(s==="checking"){ rcTitle.textContent="ตั้งรหัสผ่านใหม่"; rcSub.textContent="กำลังตรวจสอบลิงก์…"; }
+    if(s==="ready"){ rcTitle.textContent="ตั้งรหัสผ่านใหม่"; rcSub.textContent="ตั้งรหัสผ่านใหม่ให้บัญชีเจ้าของร้าน (อย่างน้อย "+RC_MIN+" ตัวอักษร)"; setTimeout(()=>{ if(!rc.contains(document.activeElement)) rcPw.focus(); },50); }   // ไม่แย่งโฟกัสถ้าผู้ใช้เลือกช่องเองแล้ว
+    if(s==="error"){ rcTitle.textContent="ลิงก์ใช้ไม่ได้"; rcSub.textContent=text||EXPIRED;
+      rcAlt.textContent=opt&&opt.retry?"ลองอีกครั้ง":"ขอลิงก์ใหม่"; rcAlt.dataset.mode=opt&&opt.retry?"retry":"new"; Mascot.fail(); }
+  }
+  /* ยืนยัน recovery session กับเซิร์ฟเวอร์ (getUser = ถามเซิร์ฟเวอร์จริง ไม่เชื่อแค่ข้อมูลในเครื่อง) */
+  async function confirmRecovery(){
+    try{
+      const u=await client.auth.getUser();
+      if(u.error||!u.data||!u.data.user) throw (u.error||{code:"no_user"});
+      recEmail=u.data.user.email||""; recoveryOK=true; pendingInfo=null; rcState("ready");
+    }catch(er){ await failRecovery(er); }
+  }
+  async function failRecovery(er){
+    const t=linkErrText(er);
+    recoveryOK=false;
+    if(t.net&&pendingInfo){ rcState("error",t.text,{retry:true}); return; }   // เน็ตหลุด: เก็บข้อมูลลิงก์ไว้ในหน่วยความจำเพื่อให้กดลองใหม่ (ไม่เขียน storage)
+    pendingInfo=null; store.removeItem(REC_KEY); await localSignOut();       // ทิ้งเซสชันที่ไม่สมบูรณ์ทั้งหมด
+    rcState("error",t.text,{retry:false});
+  }
+  async function startRecovery(info){
+    recovering=true; recoveryOK=false; store.setItem(REC_KEY,"1");
+    window.SS_stop&&window.SS_stop(); rcState("checking");
+    pendingInfo=info;
+    try{
+      if(info.access&&info.refresh){
+        const r=await client.auth.setSession({access_token:info.access,refresh_token:info.refresh});
+        if(r.error) throw r.error;
+      } else if(info.tokenHash){
+        const r=await client.auth.verifyOtp({token_hash:info.tokenHash,type:"recovery"});
+        if(r.error) throw r.error;
+      } else throw {code:"no_token"};
+    }catch(er){ await failRecovery(er); return; }
+    info.access=""; info.refresh=""; info.tokenHash="";   // โทเคนถูกใช้แล้ว ลบออกจากตัวแปร (เหลือในไลบรารีเท่านั้น)
+    await confirmRecovery();
+  }
+  /* เปิดเว็บใหม่ขณะอยู่กลางขั้นตอน (มีธง REC_KEY + มีเซสชัน) → กลับมาหน้าตั้งรหัสผ่านต่อ ไม่เข้าแอป */
+  async function resumeRecovery(){
+    recovering=true; recoveryOK=false; store.setItem(REC_KEY,"1"); window.SS_stop&&window.SS_stop(); rcState("checking"); await confirmRecovery();
+  }
+  async function cancelRecovery(note){
+    recovering=false; recoveryOK=false; pendingInfo=null; store.removeItem(REC_KEY); await localSignOut(); showLogin(note);
+  }
+  function handleAuthUrl(info){
+    const isErr=!!(info.errCode||info.err||info.errDesc)&&!info.access;
+    if(isErr){
+      const c=info.errCode||info.err;
+      localSignOut().then(()=>showLogin(/otp_expired|access_denied/i.test(c)||/expired|invalid/i.test(info.errDesc)?EXPIRED:"ลิงก์ไม่ถูกต้อง กรุณาขอลิงก์ใหม่"));
+      return;
+    }
+    if(info.type==="recovery"&&((info.access&&info.refresh)||info.tokenHash)){ startRecovery(info); return; }
+    // ลิงก์ชนิดอื่น (สมัคร/magic link/เปลี่ยนอีเมล ฯลฯ) หรือข้อมูลไม่ครบ: ไม่สร้างเซสชันจากลิงก์นี้
+    showLogin("ลิงก์นี้ไม่ใช่ลิงก์ตั้งรหัสผ่านใหม่ หรือข้อมูลในลิงก์ไม่ครบ กรุณาขอลิงก์ใหม่");
+  }
+  function updErr(er){
+    const m=String((er&&er.message)||""), c=String((er&&er.code)||""), st=er&&er.status;
+    if(c==="same_password"||/different from the old/i.test(m)) return {text:"รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม"};
+    if(c==="weak_password"||/weak|at least|characters/i.test(m)) return {text:"รหัสผ่านไม่ปลอดภัยพอ ลองให้ยาวขึ้นและผสมตัวอักษร ตัวเลข สัญลักษณ์"};
+    if(isNetErr(er)) return {text:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ยังไม่ทราบว่าเปลี่ยนรหัสผ่านสำเร็จหรือไม่ ลองกดบันทึกอีกครั้ง ถ้ายังไม่ได้ให้ลองเข้าสู่ระบบด้วยรหัสผ่านใหม่"};
+    if(st===429||/rate limit|too many/i.test(m)) return {text:"ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่"};
+    if(st===401||st===403||/session|jwt|expired|not authenticated|missing/i.test(m)||c==="session_not_found"||c==="reauthentication_needed") return {text:EXPIRED,expired:true};
+    return {text:"ตั้งรหัสผ่านใหม่ไม่สำเร็จ: "+(m||"ไม่ทราบสาเหตุ")};
+  }
+  rc.addEventListener("submit",async e=>{
+    e.preventDefault();
+    if(rcBusy) return;
+    // ด่านที่ 1: ต้องผ่านการยืนยัน recovery session แล้วเท่านั้น
+    if(!recovering||!recoveryOK){ rcMsg.className="lg-msg"; rcMsg.textContent="ยังยืนยันลิงก์ไม่สำเร็จ ตั้งรหัสผ่านไม่ได้"; return; }
+    const a1=rcPw.value, a2=rcPw2.value;
+    rcMsg.className="lg-msg";
+    if(!a1){ rcMsg.textContent="กรอกรหัสผ่านใหม่ก่อน"; rcPw.focus(); return; }
+    if(a1.length<RC_MIN){ rcMsg.textContent="รหัสผ่านต้องยาวอย่างน้อย "+RC_MIN+" ตัวอักษร"; rcPw.focus(); return; }
+    if(a1!==a2){ rcMsg.textContent="รหัสผ่านสองช่องไม่ตรงกัน พิมพ์ให้เหมือนกัน"; rcPw2.focus(); return; }
+    rcBusy=true; rcBtn.disabled=true; Mascot.thinking(); rcPw.blur(); rcPw2.blur(); Mascot.cover(false);
+    let er=null, expired=false;
+    try{
+      // ด่านที่ 2: ยังมีเซสชันจริงอยู่ในตัวไลบรารีก่อนเรียก updateUser
+      const s=await client.auth.getSession();
+      if(!s||!s.data||!s.data.session){ expired=true; er={code:"session_not_found"}; }
+      else { const r=await client.auth.updateUser({password:a1}); er=r.error; }
+    }catch(ex){ er=ex; }
+    rcPw.value=""; rcPw2.value="";                       // ล้างช่องรหัสผ่านทันที (ไม่เก็บ ไม่ log)
+    await new Promise(r=>setTimeout(r,350));
+    rcBusy=false;
+    if(!er){
+      Mascot.success(); rcMsg.className="lg-msg ok"; rcMsg.textContent="ตั้งรหัสผ่านใหม่สำเร็จ!";
+      store.removeItem(REC_KEY); recovering=false; recoveryOK=false;
+      await localSignOut();                              // ไม่เข้าแอปอัตโนมัติ ให้ล็อกอินด้วยรหัสผ่านใหม่
+      const mail=recEmail; recEmail="";
+      setTimeout(()=>{ showLogin("ตั้งรหัสผ่านใหม่สำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่",true); if(mail) em.value=mail; },1000);
+      return;
+    }
+    Mascot.fail(); rc.classList.remove("shake"); void rc.offsetWidth; rc.classList.add("shake");
+    const t=expired?{text:EXPIRED,expired:true}:updErr(er);
+    if(t.expired){ pendingInfo=null; store.removeItem(REC_KEY); await localSignOut(); rcState("error",t.text,{retry:false}); return; }
+    rcMsg.className="lg-msg"; rcMsg.textContent=t.text; rcBtn.disabled=false; setTimeout(()=>rcPw.focus(),400);
+  });
+  rcCancel.addEventListener("click",()=>cancelRecovery());
+  rcAlt.addEventListener("click",()=>{
+    if(rcAlt.dataset.mode==="retry"&&pendingInfo){ startRecovery(pendingInfo); return; }
+    recovering=false; pendingInfo=null; store.removeItem(REC_KEY); localSignOut().then(()=>{ showLogin(); openForgot(); });
+  });
+  // ช่องรหัสผ่านของหน้าตั้งรหัสใหม่: น้องแมวปิดตาเหมือนหน้า Login เดิม
+  [rcPw,rcPw2].forEach(f=>{
+    f.addEventListener("focus",()=>{ Mascot.unwatch(); Mascot.cover(true); Mascot.peek(f.type==="text"); });
+    f.addEventListener("blur",()=>{ setTimeout(()=>{ const x=document.activeElement; if(x!==rcPw&&x!==rcPw2&&x!==rcShow) Mascot.cover(false); },0); });
+    f.addEventListener("input",()=>Mascot.typing());
+  });
+  rcShow.addEventListener("pointerdown",e=>e.preventDefault());
+  rcShow.addEventListener("click",()=>{
+    const vis=rcPw.type==="password"; rcPw.type=vis?"text":"password"; rcPw2.type=vis?"text":"password";
+    rcShow.setAttribute("aria-pressed",String(vis)); rcShow.setAttribute("aria-label",vis?"ซ่อนรหัสผ่าน":"แสดงรหัสผ่าน");
+    Mascot.cover(true); Mascot.peek(vis);
+  });
+
+  /* ---------- ลืมรหัสผ่าน: ขอลิงก์ตั้งรหัสผ่านใหม่ (resetPasswordForEmail) ---------- */
+  function openForgot(){
+    resetRecFields(); setCards("fg"); fgEm.value=em.value.trim(); fgBtn.disabled=configBad; Mascot.cover(false);
+    setTimeout(()=>{ if(!fg.contains(document.activeElement)) fgEm.focus(); },50);
+  }
+  lgForgot.addEventListener("click",openForgot);
+  fgBack.addEventListener("click",()=>{ const m=fgEm.value; showLogin(); em.value=m; });
+  fgEm.addEventListener("focus",()=>{ Mascot.cover(false); Mascot.watchField(fgEm); });
+  fgEm.addEventListener("blur",()=>Mascot.unwatch());
+  fgEm.addEventListener("input",()=>Mascot.typing());
+  fg.addEventListener("submit",async e=>{
+    e.preventDefault();
+    if(configBad||fgBusy) return;
+    const now=Date.now();
+    if(now<fgUntil){ fgMsg.className="lg-msg"; fgMsg.textContent=`ขอลิงก์ได้อีกครั้งในอีก ${Math.ceil((fgUntil-now)/1000)} วินาที`; return; }
+    const email=fgEm.value.trim();
+    fgMsg.className="lg-msg";
+    if(!email||!/^\S+@\S+\.\S+$/.test(email)){ fgMsg.textContent="กรอกอีเมลให้ถูกต้องก่อน"; fgEm.focus(); return; }
+    fgBusy=true; fgBtn.disabled=true; Mascot.thinking();
+    let er=null;
+    try{
+      const redirectTo=location.href.split(/[?#]/)[0];   // กลับมาที่หน้านี้ (ต้องอยู่ใน Redirect URLs ของ Supabase)
+      const r=await client.auth.resetPasswordForEmail(email,{redirectTo}); er=r.error;
+    }catch(ex){ er=ex; }
+    fgBusy=false;
+    if(!er){
+      fgUntil=Date.now()+60000; Mascot.success(); fgMsg.className="lg-msg ok";
+      fgMsg.textContent="ถ้าอีเมลนี้เป็นของเจ้าของร้าน ระบบได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปให้แล้ว ตรวจกล่องจดหมาย (และสแปม) · ลิงก์ใช้ได้ครั้งเดียวและมีอายุจำกัด";
+      fgBtn.disabled=false; return;
+    }
+    Mascot.fail(); const m=String(er.message||""), st=er.status;
+    fgMsg.className="lg-msg";
+    if(st===429||/rate limit|too many|over_email/i.test(m)||er.code==="over_email_send_rate_limit") fgMsg.textContent="ขอลิงก์บ่อยเกินไป รอสักครู่ (Supabase จำกัดจำนวนอีเมลต่อชั่วโมง) แล้วลองใหม่";
+    else if(isNetErr(er)) fgMsg.textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่";
+    else fgMsg.textContent="ส่งลิงก์ไม่สำเร็จ: "+(m||"ไม่ทราบสาเหตุ");
+    fgBtn.disabled=false;
+  });
+
+  const urlInfo=readAuthUrl();   // อ่านก่อนสร้าง client (ถ้าตั้งค่าผิดจะไม่แตะ URL)
+  const prob=configProblem();
+  if(prob){ configBad=true; msg.textContent=prob; btn.disabled=true; lgForgot.disabled=true; Mascot.start(); return; }
+  const url=String(cfg.SUPABASE_URL).trim().replace(/\/+$/,"");
+  client=window.supabase.createClient(url,String(cfg.SUPABASE_KEY).trim(),
+    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storage:store,storageKey:"ss2-auth"}});
+  /* เซสชันหมดอายุ/ถูกเพิกถอน: supabase-js ส่ง SIGNED_OUT → กลับหน้า Login (ห้าม await เรียก supabase ภายใน callback) */
+  client.auth.onAuthStateChange(ev=>{
+    // PASSWORD_RECOVERY: ตั้งธงทันที (ก่อน SIGNED_IN/getSession จะพาเข้าแอป) แล้วยืนยันกับเซิร์ฟเวอร์ภายหลัง (ห้าม await เรียก supabase ใน callback)
+    if(ev==="PASSWORD_RECOVERY"){ if(!recovering){ recovering=true; recoveryOK=false; setTimeout(resumeRecovery,0); } return; }
+    if(ev==="SIGNED_OUT"&&!manualOut&&!app.hidden&&!recovering){ setTimeout(()=>showLogin("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่"),0); }
+  });
+  if(urlInfo){ scrubUrl(); recovering = recovering || (urlInfo.type==="recovery"&&!(urlInfo.errCode||urlInfo.err)); }
+  /* วางลิงก์ลงแท็บที่เปิดเว็บอยู่แล้ว = เปลี่ยนแค่ hash หน้าไม่รีโหลด → ต้องจับเอง */
+  window.addEventListener("hashchange",()=>{
+    const i=readAuthUrl(); if(!i||rcBusy) return;
+    scrubUrl(); if(i.type==="recovery"&&!(i.errCode||i.err)) recovering=true; handleAuthUrl(i);
+  });
+  (async()=>{
+    if(urlInfo){ handleAuthUrl(urlInfo); return; }
+    try{
+      const r=await client.auth.getSession();
+      const marked=store.getItem(REC_KEY)==="1";
+      if(marked&&r&&r.data&&r.data.session){ await resumeRecovery(); return; }   // ค้างกลางขั้นตอนตั้งรหัสผ่านใหม่: ห้ามเข้าแอป
+      if(marked) store.removeItem(REC_KEY);
+      if(recovering) return;                                                       // มี PASSWORD_RECOVERY เข้ามาแล้ว
+      if(r&&r.data&&r.data.session){
+        const v=await verifyOwner();
+        if(v.ok){ enterApp(false); return; }
+        if(v.hard) await localSignOut();
+        msg.textContent=v.text;
+      }
+    }catch(e){}
+    Mascot.start();
+  })();
 })();
+
 </script>
 
 </body></html>
